@@ -1,6 +1,11 @@
+import view.TelaPrincipal;
 
 class Main{
     public static void main(String[] args) {
-        System.out.println("Hello World");
+        TelaPrincipal MainWindow = new TelaPrincipal(
+                "Logica de inserção e remoção de elementos na árvore binária",
+                800,
+                600
+        );
     }
 }
