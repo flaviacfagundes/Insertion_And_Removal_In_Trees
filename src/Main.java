@@ -3,6 +3,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import view.TelaPrincipal;
 import javax.swing.UIManager;
 
+// AUTORES: LUCAS AIORIA SERPA & FLAVIA CRISTINA FAGUNDES
 class Main {
     public static void main(String[] args) {
         try {
