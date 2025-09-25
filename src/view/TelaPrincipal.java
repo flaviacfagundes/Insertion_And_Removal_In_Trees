@@ -1,82 +1,105 @@
+
 package view;
 
-import java.util.HashMap;
-import java.awt.*;
+import controller.ArvoreController;
+import model.service.ArvoreService;
+import view.component.PainelArvore;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class TelaPrincipal extends JFrame {
-    JLabel insertInputLabel;
-    JTextField insertInputField;
-    JLabel insertLogLabel;
-    JLabel removeInputLabel;
-    JTextField removeInputField;
-    JLabel removeLogLabel;
-
-    public TelaPrincipal(String title, int X, int Y) {
-        setup(title, X, Y);
-
-        JPanel panel = new JPanel(new GridLayout(1, 2, 10, 20));
-
-        // ---------------- Painel de Inputs ----------------
-        JPanel inputsPanel = new JPanel(new GridLayout(8, 0));
-        insertInputLabel = new JLabel("Inserir elemento na árvore:");
-        insertInputField = new JTextField(20);
-        JButton submitInsertionButton = new JButton("Inserir nó");
-        submitInsertionButton.addActionListener(_ -> submitInsertionHandler());
-        insertLogLabel = new JLabel("log: ");
-
-        removeInputLabel = new JLabel("Remover elemento na árvore:");
-        removeInputField = new JTextField(20);
-        JButton submitRemovalButton = new JButton("Remover nó");
-        submitRemovalButton.addActionListener(_ -> submitRemovalHandler());
-        removeLogLabel = new JLabel("log: ");
-
-        inputsPanel.add(insertInputLabel);
-        inputsPanel.add(insertInputField);
-        inputsPanel.add(submitInsertionButton);
-        inputsPanel.add(insertLogLabel);
-        inputsPanel.add(removeInputLabel);
-        inputsPanel.add(removeInputField);
-        inputsPanel.add(submitRemovalButton);
-        inputsPanel.add(removeLogLabel);
-
-        // ---------------- Painel de Árvore ----------------
-
-        add(panel);
+    private JTextField insertInputField;
+    private JLabel insertLogLabel;
+    private JTextField removeInputField;
+    private JLabel removeLogLabel;
+    private JCheckBox balancedTreeCheckbox;
+    private PainelArvore painelArvore;
+    private ArvoreController controller;
+    public TelaPrincipal(String title, int width, int height) {
+        super(title);
+        this.controller = new ArvoreController(new ArvoreService());
+        setup(width, height);
+        initComponents();
         setVisible(true);
     }
-
-    public void setup(String title, int X, int Y) {
-        HashMap<String, Integer> size = new HashMap<>();
-        size.put("X", X);
-        size.put("Y", Y);
-        setTitle(title);
-        setSize(size.get("X"), size.get("Y"));
+    private void setup(int width, int height) {
+        setSize(width, height);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
     }
-
-    public void submitInsertionHandler() {
-        String inputText = insertInputField.getText();
+    private void initComponents() {
+        JPanel controlPanel = new JPanel(new GridBagLayout());
+        controlPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Controles"),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10) // Padding interno
+        ));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 5, 8, 5); // Aumenta o espaçamento vertical
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        controlPanel.add(new JLabel("Inserir elemento:"), gbc);
+        gbc.gridy = 1;
+        insertInputField = new JTextField(15); // Aumenta um pouco o tamanho
+        controlPanel.add(insertInputField, gbc);
+        gbc.gridy = 2;
+        JButton submitInsertionButton = new JButton("Inserir");
+        submitInsertionButton.addActionListener(_ -> submitInsertionHandler());
+        controlPanel.add(submitInsertionButton, gbc);
+        gbc.gridy = 3;
+        insertLogLabel = new JLabel("Log:");
+        controlPanel.add(insertLogLabel, gbc);
+        gbc.gridy = 4;
+        controlPanel.add(new JSeparator(), gbc);
+        gbc.gridy = 5;
+        controlPanel.add(new JLabel("Remover elemento:"), gbc);
+        gbc.gridy = 6;
+        removeInputField = new JTextField(15);
+        controlPanel.add(removeInputField, gbc);
+        gbc.gridy = 7;
+        JButton submitRemovalButton = new JButton("Remover");
+        submitRemovalButton.addActionListener(_ -> submitRemovalHandler());
+        controlPanel.add(submitRemovalButton, gbc);
+        gbc.gridy = 8;
+        removeLogLabel = new JLabel("Log:");
+        controlPanel.add(removeLogLabel, gbc);
+        gbc.gridy = 9;
+        controlPanel.add(new JSeparator(), gbc);
+        gbc.gridy = 10;
+        balancedTreeCheckbox = new JCheckBox("Usar Árvore Balanceada (AVL)");
+        controlPanel.add(balancedTreeCheckbox, gbc);
+        painelArvore = new PainelArvore();
+        add(new JScrollPane(painelArvore), BorderLayout.CENTER);
+        add(controlPanel, BorderLayout.WEST);
+    }
+    private void submitInsertionHandler() {
         try {
-            int intValue = Integer.parseInt(inputText);
-            // TODO: inserir nó na árvore real
-            insertLogLabel.setText("log: elemento " + intValue + " inserido com sucesso!");
-        } catch (NumberFormatException nfe) {
-            insertLogLabel.setText("log: valor Inteiro invalido!");
-            JOptionPane.showMessageDialog(null, "Por favor insira um valor inteiro valido!");
+            int value = Integer.parseInt(insertInputField.getText());
+            boolean isBalanced = balancedTreeCheckbox.isSelected();
+
+            controller.inserirNumero(value, isBalanced);
+            painelArvore.setRaiz(controller.getRaiz(isBalanced));
+
+            insertLogLabel.setText("Log: " + value + " inserido.");
+            insertInputField.setText("");
+        } catch (NumberFormatException e) {
+            insertLogLabel.setText("Log: Valor inválido.");
+            JOptionPane.showMessageDialog(this, "Por favor, insira um número inteiro válido.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    public void submitRemovalHandler() {
-        String input = removeInputField.getText();
+    private void submitRemovalHandler() {
         try {
-            int intValue = Integer.parseInt(input);
-            // TODO: remover nó na árvore real
-            removeLogLabel.setText("log: elemento " + intValue + " removido com sucesso!");
-        } catch (NumberFormatException nfe) {
-            removeLogLabel.setText("log: valor Inteiro invalido!");
-            JOptionPane.showMessageDialog(null, "Por favor insira um valor inteiro valido!");
+            int value = Integer.parseInt(removeInputField.getText());
+            boolean isBalanced = balancedTreeCheckbox.isSelected();
+            controller.removerNumero(value, isBalanced);
+            painelArvore.setRaiz(controller.getRaiz(isBalanced));
+            removeLogLabel.setText("Log: " + value + " removido.");
+            removeInputField.setText("");
+        } catch (NumberFormatException e) {
+            removeLogLabel.setText("Log: Valor inválido.");
+            JOptionPane.showMessageDialog(this, "Por favor, insira um número inteiro válido.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
