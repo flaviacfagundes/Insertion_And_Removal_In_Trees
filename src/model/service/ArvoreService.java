@@ -5,8 +5,8 @@ import model.ArvoreBinaria;
 import model.Node;
 
 public class ArvoreService {
-    private ArvoreBinaria arvoreBinaria;
-    private ArvoreBalanceada arvoreBalanceada;
+    private final ArvoreBinaria arvoreBinaria;
+    private final ArvoreBalanceada arvoreBalanceada;
 
     public ArvoreService() {
         arvoreBinaria = new ArvoreBinaria();

@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  * <pre>
  * {@code LoggingManager logger = new LoggingManager();}
  * {@code logger.logInfo(
- *          "100",
+ *          "200",
  *          "Operation completed successfully."
  *      );
  * }

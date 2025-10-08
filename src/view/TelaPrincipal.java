@@ -15,7 +15,7 @@ public class TelaPrincipal extends JFrame {
     private JLabel removeLogLabel;
     private JCheckBox balancedTreeCheckbox;
     private PainelArvore painelArvore;
-    private ArvoreController controller;
+    private final ArvoreController controller;
     public TelaPrincipal(String title, int width, int height) {
         super(title);
         this.controller = new ArvoreController(new ArvoreService());
@@ -78,10 +78,8 @@ public class TelaPrincipal extends JFrame {
         try {
             int value = Integer.parseInt(insertInputField.getText());
             boolean isBalanced = balancedTreeCheckbox.isSelected();
-
             controller.inserirNumero(value, isBalanced);
             painelArvore.setRaiz(controller.getRaiz(isBalanced));
-
             insertLogLabel.setText("Log: " + value + " inserido.");
             insertInputField.setText("");
         } catch (NumberFormatException e) {

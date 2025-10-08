@@ -9,7 +9,7 @@ public class PainelArvore extends JPanel {
     private Node raiz;
     private static final int RAIO_NO = 22;
     private static final int ESPACO_VERTICAL = 60;
-    private static final Color COR_FUNDO = new Color(43, 43, 43); // #2B2B2B
+    private static final Color COR_FUNDO = new Color(43, 43, 43);
     private static final Color COR_LINHA = new Color(120, 120, 120);
     private static final Color COR_NO = new Color(75, 75, 75);
     private static final Color COR_BORDA_NO = new Color(150, 150, 150);
